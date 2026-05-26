@@ -51,7 +51,7 @@ def _select_relevant_links(client: OpenAI, url: str) -> dict:
         response_format={"type": "json_object"},
     )
     links = json.loads(response.choices[0].message.content)
-    print(f"Found {len(links['links'])} relevant links", file=sys.stderr)
+    print(f"Found {len(links.get('links', []))} relevant links", file=sys.stderr)
     return links
 
 
@@ -59,7 +59,7 @@ def _fetch_all_content(client: OpenAI, url: str) -> str:
     content = fetch_website_content(url)
     relevant_links = _select_relevant_links(client, url)
     result = f"## Landing Page:\n\n{content}\n## Relevant Links:\n"
-    for link in relevant_links["links"]:
+    for link in relevant_links.get("links", []):
         result += f"\n\n### Link: {link['type']}\n"
         result += fetch_website_content(link["url"])
     return result

@@ -1,8 +1,10 @@
 {
     "cSpell.words": [
         "beautifulsoup",
+        "domcontentloaded",
         "dotenv",
         "KHTML",
+        "networkidle",
         "pycache",
         "venv"
     ]
