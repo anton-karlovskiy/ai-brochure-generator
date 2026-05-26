@@ -6,7 +6,7 @@ from .scraper import fetch_website_contents, fetch_website_links
 LINK_SELECTION_MODEL = "gpt-5-nano"
 BROCHURE_MODEL = "gpt-4.1-mini"
 
-_link_system_prompt = """
+_links_system_prompt = """
 You are provided with a list of links found on a webpage.
 You are able to decide which of the links would be most relevant to include in a brochure about the company,
 such as links to an About page, or a Company page, or Careers/Jobs pages.
@@ -45,7 +45,7 @@ def select_relevant_links(client: OpenAI, url: str) -> dict:
     response = client.chat.completions.create(
         model=LINK_SELECTION_MODEL,
         messages=[
-            {"role": "system", "content": _link_system_prompt},
+            {"role": "system", "content": _links_system_prompt},
             {"role": "user", "content": _get_links_user_prompt(url)},
         ],
         response_format={"type": "json_object"},
