@@ -39,5 +39,5 @@ uv run main.py "HuggingFace" https://huggingface.co
 Output streams to stdout as markdown. Redirect to a file to save:
 
 ```bash
-uv run main.py "Anthropic" https://anthropic.com > brochure.md
+uv run main.py "Anthropic" https://anthropic.com > brochures/anthropic.com.md
 ```
