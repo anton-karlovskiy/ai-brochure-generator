@@ -1,0 +1,14 @@
+[project]
+name = "ai-brochure-generator"
+version = "0.1.0"
+description = "Generate a markdown brochure for any company by scraping its website using OpenAI"
+requires-python = ">=3.11"
+dependencies = [
+    "beautifulsoup4>=4.13",
+    "openai>=1.84",
+    "python-dotenv>=1.1",
+    "requests>=2.32",
+]
+
+[project.scripts]
+brochure = "main:main"

@@ -21,8 +21,7 @@ main.py          # CLI entry point
 ## Setup
 
 ```bash
-uv venv
-uv pip install -r requirements.txt
+uv sync
 ```
 
 Copy `.env.example` to `.env` and add your OpenAI API key:
