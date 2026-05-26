@@ -1,7 +1,7 @@
 import json
 import sys
 from openai import OpenAI
-from .scraper import fetch_website_contents, fetch_website_links
+from .scraper import fetch_website_content, fetch_website_links
 
 LINK_SELECTION_MODEL = "gpt-5-nano"
 BROCHURE_MODEL = "gpt-4.1-mini"
@@ -56,12 +56,12 @@ def _select_relevant_links(client: OpenAI, url: str) -> dict:
 
 
 def _fetch_all_content(client: OpenAI, url: str) -> str:
-    contents = fetch_website_contents(url)
+    content = fetch_website_content(url)
     relevant_links = _select_relevant_links(client, url)
-    result = f"## Landing Page:\n\n{contents}\n## Relevant Links:\n"
+    result = f"## Landing Page:\n\n{content}\n## Relevant Links:\n"
     for link in relevant_links["links"]:
         result += f"\n\n### Link: {link['type']}\n"
-        result += fetch_website_contents(link["url"])
+        result += fetch_website_content(link["url"])
     return result
 
 

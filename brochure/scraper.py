@@ -6,7 +6,7 @@ headers = {
 }
 
 
-def fetch_website_contents(url: str) -> str:
+def fetch_website_content(url: str) -> str:
     response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.content, "html.parser")
     title = soup.title.string if soup.title else "No title found"
