@@ -6,7 +6,7 @@ from openai import OpenAI
 from brochure import stream_brochure
 
 
-def main():
+def main() -> None:
     load_dotenv()
 
     api_key = os.getenv("OPENAI_API_KEY")

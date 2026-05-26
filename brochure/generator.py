@@ -1,10 +1,20 @@
 import json
 import sys
+from typing import Final, TypedDict
 from openai import OpenAI
 from .scraper import fetch_website_content, fetch_website_links
 
-LINK_SELECTION_MODEL = "gpt-5-nano"
-BROCHURE_MODEL = "gpt-4.1-mini"
+LINK_SELECTION_MODEL: Final = "gpt-5-nano"
+BROCHURE_MODEL: Final = "gpt-4.1-mini"
+
+
+class _LinkEntry(TypedDict):
+    type: str
+    url: str
+
+
+class _LinksResponse(TypedDict):
+    links: list[_LinkEntry]
 
 _links_system_prompt = """
 You are provided with a list of links found on a webpage.
@@ -40,7 +50,7 @@ def _get_links_user_prompt(url: str) -> str:
     return prompt
 
 
-def _select_relevant_links(client: OpenAI, url: str) -> dict:
+def _select_relevant_links(client: OpenAI, url: str) -> _LinksResponse:
     print(f"Selecting relevant links for {url} ...", file=sys.stderr)
     response = client.chat.completions.create(
         model=LINK_SELECTION_MODEL,
@@ -50,16 +60,19 @@ def _select_relevant_links(client: OpenAI, url: str) -> dict:
         ],
         response_format={"type": "json_object"},
     )
-    links = json.loads(response.choices[0].message.content)
-    print(f"Found {len(links.get('links', []))} relevant links", file=sys.stderr)
-    return links
+    content = response.choices[0].message.content
+    if content is None:
+        return _LinksResponse(links=[])
+    data: _LinksResponse = json.loads(content)
+    print(f"Found {len(data.get('links', []))} relevant links", file=sys.stderr)
+    return data
 
 
 def _fetch_all_content(client: OpenAI, url: str) -> str:
     content = fetch_website_content(url)
     relevant_links = _select_relevant_links(client, url)
     result = f"## Landing Page:\n\n{content}\n## Relevant Links:\n"
-    for link in relevant_links.get("links", []):
+    for link in relevant_links["links"]:
         result += f"\n\n### Link: {link['type']}\n"
         result += fetch_website_content(link["url"])
     return result

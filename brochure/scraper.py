@@ -1,8 +1,9 @@
+from typing import Final
 from bs4 import BeautifulSoup
 import requests
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 
-headers = {
+headers: Final[dict[str, str]] = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
 }
 
@@ -32,7 +33,7 @@ def _fetch_with_playwright(url: str) -> BeautifulSoup:
             page.goto(url, wait_until="domcontentloaded", timeout=60_000)
             try:
                 page.wait_for_load_state("networkidle", timeout=5_000)
-            except Exception:
+            except PlaywrightTimeoutError:
                 pass
             html = page.content()
         finally:
@@ -66,5 +67,8 @@ def fetch_website_links(url: str) -> list[str]:
         soup = _fetch_soup(url)
     except Exception:
         return []
-    links = [link.get("href") for link in soup.find_all("a")]
-    return [link for link in links if link]
+    return [
+        href
+        for tag in soup.find_all("a")
+        if isinstance(href := tag.get("href"), str)
+    ]
