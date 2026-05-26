@@ -40,7 +40,7 @@ def _get_links_user_prompt(url: str) -> str:
     return prompt
 
 
-def select_relevant_links(client: OpenAI, url: str) -> dict:
+def _select_relevant_links(client: OpenAI, url: str) -> dict:
     print(f"Selecting relevant links for {url} ...", file=sys.stderr)
     response = client.chat.completions.create(
         model=LINK_SELECTION_MODEL,
@@ -57,7 +57,7 @@ def select_relevant_links(client: OpenAI, url: str) -> dict:
 
 def _fetch_all_content(client: OpenAI, url: str) -> str:
     contents = fetch_website_contents(url)
-    relevant_links = select_relevant_links(client, url)
+    relevant_links = _select_relevant_links(client, url)
     result = f"## Landing Page:\n\n{contents}\n## Relevant Links:\n"
     for link in relevant_links["links"]:
         result += f"\n\n### Link: {link['type']}\n"
