@@ -4,6 +4,7 @@
         "domcontentloaded",
         "dotenv",
         "KHTML",
+        "mypy",
         "networkidle",
         "pycache",
         "venv"
